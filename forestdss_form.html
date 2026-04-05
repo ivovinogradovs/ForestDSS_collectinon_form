@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ForestDSS Characterization Form</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#f4f1eb;--surface:#faf8f4;--surface2:#eeeae0;--border:#c8c0aa;--border-strong:#8a7d62;
+    --accent:#2d5a1b;--accent2:#5c8a3a;--accent-light:#e8f0e2;
+    --text:#1a1a14;--text-muted:#6b6351;--text-light:#9a8f78;
+    --tag-bg:#d4e8c8;--tag-text:#1e4010;
+    --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',sans-serif;--radius:3px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;min-height:100vh}
+  .site-header{background:var(--accent);color:#e8f0e2;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+  .header-inner{max-width:1160px;margin:0 auto;padding:11px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .header-title{font-family:var(--mono);font-size:15px;font-weight:600;letter-spacing:.02em}
+  .header-sub{font-size:11px;opacity:.7;font-family:var(--mono)}
+  .header-actions{display:flex;gap:8px;align-items:center}
+  .header-actions .btn{color:white}
+  .layout{max-width:1160px;margin:0 auto;padding:24px;display:grid;grid-template-columns:230px 1fr;gap:24px;align-items:start}
+  .sidebar{position:sticky;top:58px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;max-height:calc(100vh - 80px);overflow-y:auto}
+  .sidebar-header{background:var(--surface2);padding:9px 14px;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);position:sticky;top:0}
+  .nav-item{display:flex;align-items:center;gap:8px;padding:8px 14px;cursor:pointer;border-bottom:1px solid var(--border);transition:background .15s;font-size:12px;color:var(--text-muted);text-decoration:none}
+  .nav-item:hover,.nav-item.active{background:var(--accent-light);color:var(--accent)}
+  .nav-item.active{font-weight:600}
+  .nav-dot{width:7px;height:7px;border-radius:50%;background:var(--border-strong);flex-shrink:0}
+  .nav-item.active .nav-dot{background:var(--accent)}
+  .nav-count{margin-left:auto;font-family:var(--mono);font-size:10px;background:var(--surface2);padding:1px 6px;border-radius:10px;color:var(--text-light)}
+  .nav-item.active .nav-count{background:var(--accent);color:white}
+  .main{min-width:0}
+  .section{display:none;animation:fadeIn .2s ease}
+  .section.active{display:block}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+  .section-header{margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid var(--accent)}
+  .section-title{font-family:var(--mono);font-size:18px;font-weight:600;color:var(--accent);margin-bottom:4px}
+  .section-def{font-size:12px;color:var(--text-muted);font-style:italic;max-width:700px;line-height:1.5}
+  .section-class{font-family:var(--mono);font-size:10px;color:var(--text-light);margin-top:4px}
+  .instance-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:16px;overflow:hidden}
+  .card-header{background:var(--surface2);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+  .card-label{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--text-muted);letter-spacing:.05em}
+  .card-body{padding:16px}
+  .field-group{margin-bottom:13px}
+  .field-group:last-child{margin-bottom:0}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+  .field-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:13px}
+  label{display:block;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px}
+  label .def-tooltip{font-weight:400;font-style:italic;text-transform:none;letter-spacing:0;color:var(--text-light);font-size:10px;display:block;margin-top:1px}
+  input[type=text],input[type=number],input[type=email],input[type=url],select,textarea{width:100%;padding:7px 10px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);font-family:var(--sans);font-size:13px;color:var(--text);transition:border-color .15s,box-shadow .15s;outline:none;appearance:none}
+  input:focus,select:focus,textarea:focus{border-color:var(--accent2);box-shadow:0 0 0 2px rgba(45,90,27,.12);background:white}
+  textarea{resize:vertical;min-height:65px;line-height:1.5}
+  select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%238a7d62' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;cursor:pointer}
+  .bool-group{display:flex;gap:5px;flex-wrap:wrap}
+  .bool-option{position:relative}
+  .bool-option input[type=radio]{position:absolute;opacity:0}
+  .bool-option label{display:inline-flex;align-items:center;padding:5px 12px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;font-size:12px;font-weight:500;text-transform:none;letter-spacing:0;color:var(--text-muted);transition:all .15s;margin-bottom:0}
+  .bool-option input:checked+label{background:var(--accent);color:white;border-color:var(--accent)}
+  .bool-option label:hover{border-color:var(--accent2)}
+  .check-group{display:flex;flex-wrap:wrap;gap:5px}
+  .check-option{position:relative}
+  .check-option input[type=checkbox]{position:absolute;opacity:0}
+  .check-option label{display:inline-flex;align-items:center;padding:4px 9px;background:var(--bg);border:1px solid var(--border);border-radius:2px;cursor:pointer;font-size:11px;text-transform:none;letter-spacing:0;color:var(--text-muted);transition:all .15s;margin-bottom:0}
+  .check-option input:checked+label{background:var(--tag-bg);color:var(--tag-text);border-color:var(--accent2);font-weight:500}
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--radius);border:none;cursor:pointer;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.04em;transition:all .15s}
+  .btn-primary{background:var(--accent);color:white}.btn-primary:hover{background:var(--accent2)}
+  .btn-outline{background:transparent;color:var(--accent);border:1px solid var(--accent)}.btn-outline:hover{background:var(--accent-light)}
+  .btn-ghost{background:transparent;color:var(--text-muted);border:1px solid var(--border)}.btn-ghost:hover{background:var(--surface2)}
+  .btn-danger{background:transparent;color:#8b2a1a;border:1px solid #8b2a1a}.btn-danger:hover{background:#fdf0ee}
+  .btn-sm{padding:4px 10px;font-size:10px}
+  .btn-export{background:var(--accent);color:white;padding:9px 20px;font-size:12px}.btn-export:hover{background:var(--accent2)}
+  .add-instance-bar{display:flex;align-items:center;gap:10px;padding:12px 0;border-top:1px dashed var(--border);margin-top:8px}
+  .field-sep{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-light);padding:10px 0 6px;margin-top:6px;border-top:1px solid var(--border)}
+  .relation-info{background:var(--accent-light);border:1px solid #b8d4a0;border-radius:var(--radius);padding:9px 14px;margin-bottom:14px;font-size:12px;color:var(--accent)}
+  .export-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-top:16px}
+  .export-title{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--accent);margin-bottom:6px}
+  .export-desc{font-size:12px;color:var(--text-muted);margin-bottom:12px}
+  .export-btns{display:flex;gap:10px;flex-wrap:wrap}
+  .intro-card{background:var(--accent);color:#e8f0e2;border-radius:var(--radius);padding:18px 22px;margin-bottom:18px}
+  .intro-card h2{font-family:var(--mono);font-size:13px;margin-bottom:7px}
+  .intro-card p{font-size:12px;line-height:1.6;opacity:.85}
+  .intro-card .dss-id-field{margin-top:12px;display:flex;align-items:flex-end;gap:12px}
+  .intro-card input{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:white;width:260px}
+  .intro-card input::placeholder{color:rgba(255,255,255,.5)}
+  .intro-card input:focus{background:rgba(255,255,255,.25);border-color:rgba(255,255,255,.6);box-shadow:none}
+  .intro-card label{color:rgba(255,255,255,.7)}
+  .toast{position:fixed;bottom:24px;right:24px;background:var(--accent);color:white;padding:10px 18px;border-radius:var(--radius);font-family:var(--mono);font-size:12px;z-index:999;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none}
+  .toast.show{opacity:1;transform:translateY(0)}
+  @media(max-width:768px){.layout{grid-template-columns:1fr}.sidebar{position:static}.field-row,.field-row-3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <div>
+      <div class="header-title">ForestDSS · Characterization Form</div>
+      <div class="header-sub">COST Action CA22141 · Training School Exercise</div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-ghost btn-sm" onclick="loadDemo()">Load demo</button>
+      <button class="btn btn-ghost btn-sm" onclick="newDSS()">↺ New DSS</button>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+<nav class="sidebar">
+  <div class="sidebar-header">Ontology classes</div>
+  <a class="nav-item active" onclick="return showSection('dss')" href="#"><span class="nav-dot"></span>Decision Support System<span class="nav-count" id="count-dss">0</span></a>
+  <a class="nav-item" onclick="return showSection('software')" href="#"><span class="nav-dot"></span>Software<span class="nav-count" id="count-software">0</span></a>
+  <a class="nav-item" onclick="return showSection('model')" href="#"><span class="nav-dot"></span>Model<span class="nav-count" id="count-model">0</span></a>
+  <a class="nav-item" onclick="return showSection('forestmgmt')" href="#"><span class="nav-dot"></span>Forest Management<span class="nav-count" id="count-forestmgmt">0</span></a>
+  <a class="nav-item" onclick="return showSection('es')" href="#"><span class="nav-dot"></span>Ecosystem Services<span class="nav-count" id="count-es">0</span></a>
+  <a class="nav-item" onclick="return showSection('planning')" href="#"><span class="nav-dot"></span>Planning Problem<span class="nav-count" id="count-planning">0</span></a>
+  <a class="nav-item" onclick="return showSection('casestudy')" href="#"><span class="nav-dot"></span>Case Study<span class="nav-count" id="count-casestudy">0</span></a>
+  <a class="nav-item" onclick="return showSection('inputdata')" href="#"><span class="nav-dot"></span>Input Data<span class="nav-count" id="count-inputdata">0</span></a>
+  <a class="nav-item" onclick="return showSection('outputdata')" href="#"><span class="nav-dot"></span>Output Data<span class="nav-count" id="count-outputdata">0</span></a>
+  <a class="nav-item" onclick="return showSection('techniques')" href="#"><span class="nav-dot"></span>Decision Techniques<span class="nav-count" id="count-techniques">0</span></a>
+  <a class="nav-item" onclick="return showSection('uncertainty')" href="#"><span class="nav-dot"></span>Uncertainty Evaluation<span class="nav-count" id="count-uncertainty">0</span></a>
+  <a class="nav-item" onclick="return showSection('scenario')" href="#"><span class="nav-dot"></span>Scenario<span class="nav-count" id="count-scenario">0</span></a>
+  <a class="nav-item" onclick="return showSection('participatory')" href="#"><span class="nav-dot"></span>Participatory Process<span class="nav-count" id="count-participatory">0</span></a>
+  <a class="nav-item" onclick="return showSection('lesson')" href="#"><span class="nav-dot"></span>Lessons Learned<span class="nav-count" id="count-lesson">0</span></a>
+  <a class="nav-item" onclick="return showSection('km')" href="#"><span class="nav-dot"></span>KM Processes<span class="nav-count" id="count-km">0</span></a>
+  <a class="nav-item" onclick="return showSection('actor')" href="#"><span class="nav-dot"></span>Actor / Person<span class="nav-count" id="count-actor">0</span></a>
+  <a class="nav-item" onclick="return showSection('export')" href="#"><span class="nav-dot"></span><strong>Export</strong></a>
+</nav>
+
+<main class="main">
+
+<div class="section active" id="sec-dss">
+  <div class="intro-card">
+    <h2>Start here – assign a DSS identifier</h2>
+    <p>This ID links all instances across sections. Use the DSS acronym or a short slug (e.g. <code>SILVA-DSS</code>). It auto-fills into all new instances.</p>
+    <div class="dss-id-field"><div><label>DSS Identifier *</label><input type="text" id="global-dss-id" placeholder="e.g. SILVA-DSS" oninput="updateDSSId(this.value)"></div></div>
+  </div>
+  <div class="section-header">
+    <div class="section-title">Decision Support System</div>
+    <div class="section-def">A computational or conceptual system integrating data, models, and analytical or participatory methods to support decision-making in forest management. Look for: the system name, acronym, overall purpose, and any links to documentation or publications.</div>
+    <div class="section-class">owl:Class → Decision support system</div>
+  </div>
+  <div id="instances-dss"></div>
+  <div class="add-instance-bar"><button class="btn btn-outline" onclick="addInstance('dss')">+ Add DSS instance</button><span style="font-size:11px;color:var(--text-light)">Usually one per article</span></div>
+</div>
+
+<div class="section" id="sec-software">
+  <div class="section-header"><div class="section-title">Software</div><div class="section-def">The computational component implementing the DSS. Look for: software name, programming environment, operating system, accessibility (open/commercial), and any information about who developed it and when.</div><div class="section-class">owl:Class → Software</div></div>
+  <div class="relation-info"><strong>Object property:</strong> <code>uses software</code> – links Decision support system → Software</div>
+  <div id="instances-software"></div>
+  <div class="add-instance-bar"><button class="btn btn-outline" onclick="addInstance('software')">+ Add Software instance</button></div>
+</div>
+
+<div class="section" id="sec-model">
+  <div class="section-header"><div class="section-title">Model</div><div class="section-def">A representation of processes implemented within the DSS. Add one instance per distinct model or model type mentioned. Look for: model names, whether they are process-based or empirical, what forest processes they represent (growth, disturbance, carbon...), and at what spatial/temporal scale.</div><div class="section-class">owl:Class → Model (and subclasses)</div></div>
+  <div class="relation-info"><strong>Object property:</strong> <code>uses model</code> – links Decision support system → Model</div>
+  <div id="instances-model"></div>
+  <div class="add-instance-bar"><button class="btn btn-outline" onclick="addInstance('model')">+ Add Model instance</button><span style="font-size:11px;color:var(--text-light)">One per model type</span></div>
+</div>
+
+<div class="section" id="sec-forestmgmt">
+  <div class="section-header"><div class="section-title">Forest Management Strategy</div><div class="section-def">Forest management strategies, practices, and silvicultural approaches the DSS can represent or evaluate. Look for: silvicultural systems described, tree species considered, harvesting methods, and spatial scale of management.</div><div class="section-class">owl:Class → Forest management strategy</div></div>
+  <div class="relation-info"><strong>Object property:</strong> <code>supports forest management objective</code> – links DSS → Forest management strategy</div>
+  <div id="instances-forestmgmt"></div>
+  <div class="add-instance-bar"><button class="btn btn-outline" onclick="addInstance('forestmgmt')">+ Add Forest Management instance</button></div>
+</div>
+
+<div class="section" id="sec-es">
+  <div class="section-header"><div class="section-title">Forest Ecosystem Service</div><div class="section-def">Ecosystem services the DSS addresses, models, or produces indicators for. Add one instance per ES. Look for: which services are mentioned, how they are quantified (biophysical, monetary...), and what indicators or outputs represent them. Use the CICES hierarchy from broad (Section) to specific (Class).</div><div class="section-class">owl:Class → Forest ecosystem service category</div></div>
+  <div class="relation-info"><strong>Object property:</strong> <code>targets forest ecosystem service</code> – links DSS / Case study → ES. <strong>Tip:</strong> fill Section first, then Division, Group, and Class cascade automatically. Add one instance per distinct ES represented in the DSS.</div>
+  <div id="instances-es"></div>
+  <div class="add-instance-bar"><button class="btn btn-outline" onclick="addInstance('es')">+ Add Ecosystem Service instance</button></div>
+</div>
+
+<div class="section" id="sec-planning">
+  <div class="section-header"><div class="section-title">Planning Problem</div><div class="section-def">The decision-making context the DSS is designed to address. Look for: time horizon (strategic/tactical/operational), spatial scale, whether decisions involve one or many decision-makers, and whether multiple objectives are considered.</div><div class="section-class">owl:Class → Planning problem</div></div>
+  <div class="relation-info"><strong>Object property:</strong> <code>targets planning problem</code> – links Case study → Planning problem</div>
+  <div id="instances-planning"></div>
+  <div class="add-instance-bar"><button class="btn btn-outline" onclick="addInstance('planning')">+ Add Planning Problem instance</button></div>
+</div>
+
+<div class="section" id="sec-casestudy">
+  <div class="section-header"><div class="section-title">Case Study</div><div class="section-def">An empirical application of the DSS in a real or study context. Look for: where and when the DSS was applied, what forest type or biome, what scenarios were used, and what management frameworks (SFM, AFM, IFM) were applied.</div><div class="section-class">owl:Class → Case study</div></div>
+  <div class="relation-info"><strong>Object property:</strong> <code>has case study</code> – links Decision support system → Case study</div>
+  <div id="instances-casestudy"></div>
+  <div class="add-instance-bar"><button class="btn btn-outline" onclick="addInstance('casestudy')">+ Add Case Study instance</button></div>
+</div>
+
+<div class="section" id="sec-inputdata">
+  <div class="section-header"><div class="section-title">Input Data</div><div class="section-def">Data sources and datasets used by the DSS. Add one instance per distinct data type or source. Look for: what data the DSS requires as inputs, where it comes from (field survey, remote sensing, administrative records...), and at what spatial/temporal resolution.</div><div class="section-class">owl:Class → Data → Input data</div></div>
+  <div class="relation-info"><strong>Object property:</strong> <code>uses data source</code> – links DSS → Input data</div>
+  <div id="instances-inputdata"></div>
+  <div class="add-instance-bar"><button class="btn btn-outline" onclick="addInstance('inputdata')">+ Add Input Data instance</button></div>
+</div>
+
+<div class="section" id="sec-outputdata">
+  <div class="section-header"><div class="section-title">Output Data</div><div class="section-def">Results and indicators produced by the DSS. Look for: what outputs the DSS generates (maps, tables, charts, scenario comparisons), in what format, at what scale, and whether uncertainty is included.</div><div class="section-class">owl:Class → Data → Output data</div></div>
+  <div class="relation-info"><strong>Object property:</strong> <code>produces data output</code> – links DSS / Model → Output data</div>
+  <div id="instances-outputdata"></div>
+  <div class="add-instance-bar"><button class="btn btn-outline" onclick="addInstance('outputdata')">+ Add Output Data instance</button></div>
+</div>
+
+<div class="section" id="sec-techniques">
+  <div class="section-header"><div class="section-title">Decision Support Technique</div><div class="section-def">Analytical methods used within the DSS to process information and support decisions. Look for: whether the DSS structures problems, models alternatives, or optimizes solutions; and which specific MADM or MODM methods are used.</div><div class="section-class">owl:Class → Decision support technique</div></div>
+  <div class="relation-info"><strong>Object property:</strong> <code>uses technique</code> – links DSS → Decision support technique</div>
+  <div id="instances-techniques"></div>
+  <div class="add-instance-bar"><button class="btn btn-outline" onclick="addInstance('techniques')">+ Add Technique instance</button></div>
+</div>
+
+<div class="section" id="sec-uncertainty">
+  <div class="section-header"><div class="section-title">Uncertainty Evaluation</div><div class="section-def">How the DSS handles uncertainty. Look for: whether uncertainty is explicitly assessed, which methods are used (Monte Carlo, sensitivity analysis...), and where uncertainty originates (input data, model structure, scenarios...).</div><div class="section-class">owl:Class → Uncertainty evaluation</div></div>
+  <div class="relation-info"><strong>Object property:</strong> <code>uses uncertainty evaluation</code> – links DSS / Model → Uncertainty evaluation</div>
+  <div id="instances-uncertainty"></div>
+  <div class="add-instance-bar"><button class="btn btn-outline" onclick="addInstance('uncertainty')">+ Add Uncertainty Evaluation instance</button></div>
+</div>
+
+<div class="section" id="sec-scenario">
+  <div class="section-header"><div class="section-title">Scenario</div><div class="section-def">Future conditions or alternative states of the world used in the DSS analysis. Look for: climate scenarios (RCP, SSP, GWL), management scenarios, and the time horizon covered.</div><div class="section-class">owl:Class → Scenario</div></div>
+  <div class="relation-info"><strong>Object property:</strong> <code>uses scenario</code> – links Case study → Scenario</div>
+  <div id="instances-scenario"></div>
+  <div class="add-instance-bar"><button class="btn btn-outline" onclick="addInstance('scenario')">+ Add Scenario instance</button></div>
+</div>
+
+<div class="section" id="sec-participatory">
+  <div class="section-header"><div class="section-title">Participatory Process</div><div class="section-def">Structured processes involving stakeholders in DSS design or application. Look for: whether stakeholders were involved, how (workshops, surveys, co-design), who facilitated, and whether the process was one-time or iterative.</div><div class="section-class">owl:Class → Participatory process</div></div>
+  <div id="instances-participatory"></div>
+  <div class="add-instance-bar"><button class="btn btn-outline" onclick="addInstance('participatory')">+ Add Participatory Process instance</button></div>
+</div>
+
+<div class="section" id="sec-lesson">
+  <div class="section-header"><div class="section-title">Lessons Learned</div><div class="section-def">Insights derived from applying the DSS. Look for: explicit lessons, conclusions, or recommendations stated by the authors about what worked, what did not, and what they would recommend to others.</div><div class="section-class">owl:Class → Lesson learned</div></div>
+  <div class="relation-info"><strong>Object property:</strong> <code>documents lesson</code> – links Case study → Lesson learned</div>
+  <div id="instances-lesson"></div>
+  <div class="add-instance-bar"><button class="btn btn-outline" onclick="addInstance('lesson')">+ Add Lesson instance</button></div>
+</div>
+
+<div class="section" id="sec-km">
+  <div class="section-header"><div class="section-title">Knowledge Management Processes</div><div class="section-def">Knowledge management activities supported by or resulting from the DSS. Look for: whether the DSS supports knowledge creation, storage, transfer, or application, and what tools or platforms are used.</div><div class="section-class">owl:Class → Knowledge management process</div></div>
+  <div class="relation-info"><strong>Object property:</strong> <code>support knowledge management process</code> – links Case study → KM process</div>
+  <div id="instances-km"></div>
+  <div class="add-instance-bar"><button class="btn btn-outline" onclick="addInstance('km')">+ Add KM Process instance</button></div>
+</div>
+
+<div class="section" id="sec-actor">
+  <div class="section-header"><div class="section-title">Actor / Person</div><div class="section-def">People involved in the DSS or case study as developers, researchers, decision-makers, stakeholders, or beneficiaries. Note: the DSS contact person for wiki purposes is recorded in the DSS section. This section covers actors relevant to understanding who developed the system and who participated in or was affected by its application.</div><div class="section-class">owl:Class → Person (Individual)</div></div>
+  <div class="relation-info"><strong>Object properties:</strong> <code>has actor</code>, <code>has contact person</code> – link DSS / Case study → Person</div>
+  <div id="instances-actor"></div>
+  <div class="add-instance-bar"><button class="btn btn-outline" onclick="addInstance('actor')">+ Add Actor instance</button></div>
+</div>
+
+<div class="section" id="sec-export">
+  <div class="section-header"><div class="section-title">Export</div><div class="section-def">Export your completed characterization for submission or wiki import.</div></div>
+  <div class="export-panel">
+    <div class="export-title">Export all data</div>
+    <div class="export-desc">Export your characterization as JSON (recommended, preserves full structure) or as a single flat CSV (one row per field, all sections combined). Empty sections are skipped automatically.</div>
+    <div class="export-btns">
+      <button class="btn btn-primary" onclick="exportJSON()">↓ Export JSON</button>
+      <button class="btn btn-outline" onclick="exportFlatCSV()">↓ Export flat CSV (all)</button>
+    </div>
+  </div>
+</div>
+
+</main>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// =====================================================
+// CONTROLLED VOCABULARIES
+// =====================================================
+const V={
+  yesno:['Yes','No','Unknown'],
+  itToolType:['Extension (based on standard software)','Command line','GUI – desktop','Web application','Mobile device app','Other'],
+  techReadiness:['Prototype – no practical application','Prototype – with practical application','Non-commercial product','Open-source product','Commercial product','Other'],
+  targetUser:['Forest enterprise','Forest contractor','Forest engineering/planning firm','Forest service/administration','Forest owner/manager','Conservation manager','Research institution','Education/training','Stakeholder platform/NGO','Industry and supply chain actors','Other'],
+  costs:['0 €','≤ 100 €','≤ 1,000 €','≤ 10,000 €','> 10,000 €'],
+  training:['≤ 1 hour','≤ 1 day','≤ 1 week','≤ 1 month','> 1 month'],
+  realLife:['0','≤ 3','≤ 10','≤ 30','≤ 100','> 100'],
+  eduUse:['No','Yes – presentation/demo only','Yes – direct use by students'],
+  origin:['Research institution','PhD project','MSc project','BSc project','Public administration','Private enterprise','Other'],
+  devTeam:['1','2–5','> 5'],
+  devActors:['Practitioners','Stakeholders','Researchers','Forest specialists','Other'],
+  devMgmt:['Scrum','Kanban','XP','None'],
+  os:['Linux/Unix','Windows','macOS','Android','Multiplatform','Other'],
+  progLang:['Java','C','C++','C#','PHP','Visual Basic','Python','Perl','Lua','Fortran','Delphi','Rust','R','Angular','Other'],
+  dbms:['N/A','Excel','Access','SQLite','MySQL','PostgreSQL','Oracle','DB2','Informix','Other'],
+  gis:['N/A','Geomedia','ESRI (ArcGIS)','MapInfo','GRASS','QGIS','JUMP','gvSIG','uDig','Other'],
+  vegBiome:['Boreal','Temperate continental','Temperate Atlantic','Mediterranean','Subalpine/Alpine','Tropical','Subtropical','Other'],
+  vegType:['Empirical','Process-based','Hybrid'],
+  spatVeg:['Tree','Cohort','Stand','Landscape','> Landscape'],
+  tempVeg:['Sub-annual','Annual','Annual to decadal','> Decadal','Flexible'],
+  distType:['Fire','Wind','Beetle','Pests/disease','Other biotic','Other abiotic','Snow/ice','Drought'],
+  nwfp:['Mushroom','Berries','Herbs','Sap flow','Nuts','Medicinal plants','Resin','Honey','Other'],
+  habitatSp:['Understory plants','Bird species','Insects','Lichens','Fungi','Amphibians','Mosses','Other'],
+  region:['Northern Europe','Central Europe','Western Europe','Southern Europe','Eastern Europe','Other'],
+  mgmtScale:['Tree','Stand','Multi-stands','Forest management unit','Landscape','Region','Country'],
+  silvApproach:['Clear cut','Close-to-nature silviculture','Closer-to-nature silviculture','Continuous cover forestry','Agroforestry','No management','Other'],
+  silvType:['Tending and thinning','Natural regeneration','Plantation','Uneven-aged with broadleaves','Uneven-aged with conifers','Transformation to uneven-aged','Coppice','Coppice under standards','Forest pasture','No intervention','Other'],
+  treeSp:['Spruce','White fir','Larch','Pine','Douglas fir','Other resinous','Oak','Chestnut','Hornbeam','Lime','Beech','Maple','Ash','Alder','Birch','Aspen','Other deciduous'],
+  biodiv:['Deadwood','Old trees','Tree microhabitat','Rare tree species','Ecotone','Specific biotope','Other'],
+  harvestSys:['Ground-based logging','Cable logging','Helicopter logging','Animal logging','Other'],
+  harvestType:['Mainly manual','Mainly by machine','Mixed'],
+  harvestOp:['Felling','Processing','Extraction'],
+  infra:['Road network','Skid trails','Processing yards','Other'],
+  cicesSection:['Provisioning','Regulation & maintenance','Cultural'],
+  cicesDivision:['Biomass provisioning','Genetic materials from all biota','Transformation of biochemical or physical inputs to ecosystems','Regulation of baseline flows and extreme events','Regulation of physical, chemical, biological conditions','Physical and experiential interactions with natural environment','Intellectual and representative interactions with natural environment','Spiritual, symbolic and other cultural interactions with natural environment'],
+  cicesGroup:['Cultivated terrestrial plants for nutrition, materials or energy','Wild plants for nutrition, materials or energy','Wild animals for nutrition, materials or energy','Genetic material from plants, algae or fungi','Reduction of nutrient loads and mediation of wastes or toxic substances','Mediation of nuisances of anthropogenic origin','Erosion control','Hydrological cycle and water flow regulation','Hazard mitigation','Lifecycle maintenance, habitat and gene pool protection','Pest and disease control','Regulation of soil quality','Water conditions','Atmospheric composition and conditions','Direct, in-situ and outdoor interactions with living systems','Elements of living systems indirectly appreciated'],
+  cicesClass:['Cultivated plants grown as a source of energy (1.1.1.3)','Fibres and other materials from cultivated plants for direct use or processing (1.1.1.2)','Cultivated terrestrial plants grown for nutritional purposes (1.1.1.1)','Wild plants used for nutrition (1.1.5.1)','Fibres and other materials from wild plants for direct use or processing (1.1.5.2)','Wild plants used as a source of energy (1.1.5.3)','Wild animals used for nutritional purposes (1.1.6.1)','Fibres and other materials from wild animals for direct use or processing (1.1.6.2)','Seeds/spores/plant materials for maintaining a population (1.2.1.1)','Other provisioning services from biotic sources (1.3.X.X)','Bio-remediation by micro-organisms, algae, plants, and animals (2.1.1.1)','Filtration/sequestration/storage/accumulation by living organisms (2.1.1.2)','Smell reduction (2.1.2.1)','Noise attenuation (2.1.2.2)','Visual screening (2.1.2.3)','Control of water erosion rates (2.2.1.1)','Control of wind erosion rates (2.2.1.2)','Regulation of runoff and base flows (2.2.2.1)','Regulation of peak flows (2.2.2.2)','Buffering and attenuation of mass movement (2.2.3.1)','Surge and flood wave mitigation (2.2.3.2)','Wind protection (2.2.3.3)','Fire protection (2.2.3.4)','Pollination (2.3.2.1)','Seed dispersal (2.3.2.2)','Maintaining or regulating nursery populations and habitats (2.3.2.3)','Pest control including invasive species (2.3.3.1)','Disease control (2.3.3.2)','Biologically mediated weathering and soil quality (2.3.4.1)','Decomposition and fixing processes and soil quality (2.3.4.2)','Maintenance of soil structure by biological activity (2.3.4.3)','Regulation of chemical condition of freshwater (2.3.5.1)','Regulation of chemical composition of atmosphere and oceans (2.3.6.1)','Regulation of temperature and humidity, ventilation and transpiration (2.3.6.2)','Active/immersive interactions with living systems promoting health (3.1.1.1)','Passive/observational interactions with living systems promoting health (3.1.1.2)','Elements resonant in terms of culture or heritage (3.2.1.3)','Elements with spiritual significance (3.4.1.2)','Other cultural services (3.5.X.X)'],
+  esInput:['Biophysical','Socioeconomic','Expert-based','Combined'],
+  esQuant:['Biophysical','Monetary','Index-based','Qualitative'],
+  esIndicator:['Pressure','State','Benefit','Value'],
+  ppTempScale:['Long term (strategic)','Medium term (tactical)','Short term (operational)'],
+  ppSpatScale:['Stand level','Forest level','Regional level','National level','Continental level','Global level'],
+  ppDecision:['Unilateral (one DM)','Participatory (many DM, no consensus)','Collegial (many DM, consensus needed)','Single objective','Multiple objectives'],
+  ppSpatCtx:['Spatial with neighbourhood interrelations','Spatial with no neighbourhood interrelations','Non-spatial'],
+  csExtent:['Local','Regional','National','Global'],
+  csBiome:['Alpine','Anatolian','Arctic','Atlantic','Boreal','Continental','Mediterranean','Pannonian','Steppic'],
+  csClim:['GWL 2°C','GWL 3°C','RCP 8.5','SSP4','Other'],
+  csLULC:['LULUCF','AFOLU','Other'],
+  dataSource:['Remote sensing','Field survey','Administrative','Modelling','Literature'],
+  dataType:['Vector','Raster','Database','Table','Time series','Document','Indicator'],
+  fileFormat:['GeoJSON','Shapefile','Geodatabase','NetCDF','CSV','Excel','PDF','JSON','GeoTIFF','HTML','XML','KML','Other'],
+  spatScale:['Tree','Stand','Forest','Landscape','Region','National','Global'],
+  tempScale:['Sub-annual','Annual','Decadal','Event-based','One-time','Continuous'],
+  outViz:['Raster','Vector','Table','Report','Graph','Time series','Map','Chart','Text summary','Interactive tool'],
+  outTempScale:['Sub-annual','Annual','Decadal','Multi-decadal'],
+  outQuant:['Biophysical','Monetary','Index-based','Qualitative'],
+  outDataType:['Quantitative','Qualitative'],
+  outProc:['AI/ML','Statistics','Data mining','Other'],
+  madm:['AHP','ANP','PROMETHEE','ELECTRE','Scoring','Planning Balance Sheet','Cost Benefit Analysis','Other'],
+  modm:['Linear programming','Integer programming','Other'],
+  uncMethod:['Monte Carlo Simulation','Markov Chains','Bayes Belief Networks','Fuzzy sets','Statistics','Other'],
+  uncSource:['Input data','Scenario assumptions','Model structure','Model parameterization','Output evaluation'],
+  scenType:['Climate scenario','Land use scenario','Management scenario','Socio-economic scenario','Disturbance scenario','Policy scenario','Other'],
+  engMode:['Workshop','Co-design','Focus group','Survey','Stakeholder panel'],
+  facilitation:['Internal','External','Not facilitated'],
+  tempStruct:['One-time','Iterative','Continuous'],
+  kmProcess:['Knowledge Generation','Knowledge Identification','Knowledge Evaluation/Assessment','Knowledge Storage','Knowledge Application','Knowledge Transfer'],
+  kmTech:['Artificial Intelligence','Expert System','Database','Lessons Learned','Best Practices','Community of Practice/Webportal','Knowledge Map/Cognitive Map'],
+  actorRole:['Developer','Researcher','Decision maker','Provider','Beneficiary','Other'],
+  actorInteraction:['Top-down','Participatory','Co-production','Contract-based','Informal','Hybrid'],
+  actorLevel:['Local','Regional','National','International (regional)','Supranational','Global'],
+  actorSector:['Public','Private','Academic/Research','NGO','Community','Mixed'],
+  actorAuthority:['Regulatory','Advisory','Operational','Technical','Financial','Mixed','None'],
+  esBeneficiary:['Private landowners','State-owned enterprise','Public institutions','Local communities','General public','Industry'],
+};
+
+// =====================================================
+// CICES HIERARCHY MAP
+// =====================================================
+const CICES_MAP={
+  'Provisioning':{
+    'Biomass provisioning':{
+      'Cultivated terrestrial plants for nutrition, materials or energy':[
+        'Cultivated plants grown as a source of energy (1.1.1.3)',
+        'Fibres and other materials from cultivated plants for direct use or processing (1.1.1.2)',
+        'Cultivated terrestrial plants grown for nutritional purposes (1.1.1.1)'
+      ],
+      'Wild plants for nutrition, materials or energy':[
+        'Wild plants used for nutrition (1.1.5.1)',
+        'Fibres and other materials from wild plants for direct use or processing (1.1.5.2)',
+        'Wild plants used as a source of energy (1.1.5.3)'
+      ],
+      'Wild animals for nutrition, materials or energy':[
+        'Wild animals used for nutritional purposes (1.1.6.1)',
+        'Fibres and other materials from wild animals for direct use or processing (1.1.6.2)'
+      ]
+    },
+    'Genetic materials from all biota':{
+      'Genetic material from plants, algae or fungi':[
+        'Seeds/spores/plant materials for maintaining a population (1.2.1.1)',
+        'Other provisioning services from biotic sources (1.3.X.X)'
+      ]
+    }
+  },
+  'Regulation & maintenance':{
+    'Transformation of biochemical or physical inputs to ecosystems':{
+      'Reduction of nutrient loads and mediation of wastes or toxic substances':[
+        'Bio-remediation by micro-organisms, algae, plants, and animals (2.1.1.1)',
+        'Filtration/sequestration/storage/accumulation by living organisms (2.1.1.2)'
+      ],
+      'Mediation of nuisances of anthropogenic origin':[
+        'Smell reduction (2.1.2.1)',
+        'Noise attenuation (2.1.2.2)',
+        'Visual screening (2.1.2.3)'
+      ]
+    },
+    'Regulation of baseline flows and extreme events':{
+      'Erosion control':[
+        'Control of water erosion rates (2.2.1.1)',
+        'Control of wind erosion rates (2.2.1.2)'
+      ],
+      'Hydrological cycle and water flow regulation':[
+        'Regulation of runoff and base flows (2.2.2.1)',
+        'Regulation of peak flows (2.2.2.2)'
+      ],
+      'Hazard mitigation':[
+        'Buffering and attenuation of mass movement (2.2.3.1)',
+        'Surge and flood wave mitigation (2.2.3.2)',
+        'Wind protection (2.2.3.3)',
+        'Fire protection (2.2.3.4)'
+      ]
+    },
+    'Regulation of physical, chemical, biological conditions':{
+      'Lifecycle maintenance, habitat and gene pool protection':[
+        'Pollination (2.3.2.1)',
+        'Seed dispersal (2.3.2.2)',
+        'Maintaining or regulating nursery populations and habitats (2.3.2.3)'
+      ],
+      'Pest and disease control':[
+        'Pest control including invasive species (2.3.3.1)',
+        'Disease control (2.3.3.2)'
+      ],
+      'Regulation of soil quality':[
+        'Biologically mediated weathering and soil quality (2.3.4.1)',
+        'Decomposition and fixing processes and soil quality (2.3.4.2)',
+        'Maintenance of soil structure by biological activity (2.3.4.3)'
+      ],
+      'Water conditions':[
+        'Regulation of chemical condition of freshwater (2.3.5.1)'
+      ],
+      'Atmospheric composition and conditions':[
+        'Regulation of chemical composition of atmosphere and oceans (2.3.6.1)',
+        'Regulation of temperature and humidity, ventilation and transpiration (2.3.6.2)'
+      ]
+    }
+  },
+  'Cultural':{
+    'Physical and experiential interactions with natural environment':{
+      'Direct, in-situ and outdoor interactions with living systems':[
+        'Active/immersive interactions with living systems promoting health (3.1.1.1)',
+        'Passive/observational interactions with living systems promoting health (3.1.1.2)'
+      ]
+    },
+    'Intellectual and representative interactions with natural environment':{
+      'Elements of living systems indirectly appreciated':[
+        'Elements resonant in terms of culture or heritage (3.2.1.3)'
+      ]
+    },
+    'Spiritual, symbolic and other cultural interactions with natural environment':{
+      'Elements of living systems indirectly appreciated':[
+        'Elements with spiritual significance (3.4.1.2)',
+        'Other cultural services (3.5.X.X)'
+      ]
+    }
+  }
+};
+
+// =====================================================
+// FIELD DEFINITIONS
+// =====================================================
+const FIELDS={
+  dss:[
+    {key:'DSS_ID',label:'DSS Identifier',type:'text',auto:'dss_id'},
+    {key:'hasName',label:'Full Name',type:'text',note:'Full name including version if relevant'},
+    {key:'hasAcronym',label:'Acronym',type:'text'},
+    {sep:'Description & documentation'},
+    {key:'hasDescription',label:'Description',type:'textarea'},
+    {key:'hasRelatedDSS',label:'Related DSS',type:'text',note:'Name of related or predecessor DSS'},
+    {key:'hasURL',label:'Website',type:'url'},
+    {key:'hasOnlineDemo',label:'Online Demo URL',type:'url'},
+    {key:'hasUserManual',label:'User Manual Exists',type:'bool3',opts:['Yes','No']},
+    {key:'hasUserManualURL',label:'User Manual URL',type:'url'},
+    {key:'hasTechnicalDocumentation',label:'Technical Documentation Exists',type:'bool3',opts:['Yes','No']},
+    {key:'hasTechnicalDocumentationURL',label:'Technical Documentation URL',type:'url'},
+    {key:'hasScientificReference',label:'Scientific Reference',type:'text',note:'Author, Year, Journal'},
+    {sep:'Accessibility & costs'},
+    {key:'hasAccessibility',label:'Accessibility',type:'select',options:['','Open','Licensed','Internal/restricted']},
+    {key:'hasCosts',label:'Ready-to-use Costs for Users',type:'select',options:[''].concat(V.costs)},
+    {sep:'Decision support function'},
+    {key:'supportsProblemStructuring',label:'Problem Structuring',type:'bool3',opts:['Yes','No'],note:'Identifies objectives, criteria, stakeholders'},
+    {key:'supportsProblemModeling',label:'Problem Modelling',type:'bool3',opts:['Yes','No'],note:'Formalizes decision element relations'},
+    {key:'supportsProblemSolving',label:'Problem Solving',type:'bool3',opts:['Yes','No'],note:'Generates/selects among alternative solutions'},
+    {key:'wikiContact',label:'Wiki Contact Person',type:'text'},
+    {key:'wikiEmail',label:'Wiki Contact Email',type:'email'},
+  ],
+  software:[
+    {key:'DSS_ID',label:'DSS Identifier',type:'text',auto:'dss_id'},
+    {key:'hasName',label:'Software Name',type:'text'},
+    {key:'hasVersion',label:'Version',type:'text'},
+    {sep:'Technical properties'},
+    {key:'hasITToolType',label:'IT Tool Type',type:'select',options:[''].concat(V.itToolType)},
+    {key:'hasTechnologyReadiness',label:'Technology Readiness',type:'select',options:[''].concat(V.techReadiness)},
+    {key:'hasAccessibility',label:'Accessibility URL',type:'url',note:'Link to access/download page'},
+    {key:'requiresOperatingSystem',label:'Operating System',type:'multicheck',options:V.os},
+    {key:'hasProgrammingLanguage',label:'Programming Language',type:'multicheck',options:V.progLang},
+    {key:'hasDatabaseManagementSystem',label:'Database Management System',type:'multicheck',options:V.dbms},
+    {key:'hasGISIntegration',label:'GIS Integration',type:'multicheck',options:V.gis},
+    {key:'usesAI',label:'AI Integration',type:'text',note:'Describe AI components if any'},
+    {key:'hasHardwareRequirements',label:'Hardware & Software Requirements',type:'textarea'},
+    {sep:'Target users'},
+    {key:'targetUserGroup',label:'Target User Group',type:'multicheck',options:V.targetUser},
+    {key:'hasCosts',label:'Ready-to-use Costs',type:'select',options:[''].concat(V.costs)},
+    {key:'requiresSkills',label:'Specific Skill Requirement for Use',type:'text'},
+    {key:'requiresTrainingsDays',label:'Training Time Required',type:'select',options:[''].concat(V.training)},
+    {sep:'Development'},
+    {key:'hasResponsibleOrganization',label:'Responsible Organisation',type:'text'},
+    {key:'contactPerson',label:'Contact Person',type:'text'},
+    {key:'contactEmail',label:'Contact Email',type:'email'},
+    {key:'hasOrigin',label:'Origin',type:'select',options:[''].concat(V.origin)},
+    {key:'hasDeveloperCount',label:'Developer Team Size',type:'select',options:[''].concat(V.devTeam),note:'People with ≥10% involvement'},
+    {key:'devActors',label:'Actors Involved in Development',type:'multicheck',options:V.devActors},
+    {key:'hasDesignMethodology',label:'Design Methodology',type:'text',note:'e.g. user-centred design, agile'},
+    {key:'hasDevelopmentManagement',label:'Development Management',type:'select',options:['','Scrum','Kanban','XP','None']},
+    {sep:'Application history'},
+    {key:'hasRealLifeApplication',label:'Real-life Application Count',type:'select',options:[''].concat(V.realLife)},
+    {key:'hasApplicationYear',label:'Last Year of Known Real-life Application',type:'number'},
+    {key:'hasEducationalApplication',label:'Utilisation in Education',type:'select',options:[''].concat(V.eduUse)},
+    {key:'hasEduYear',label:'Last Year of Known Educational Use',type:'number'},
+    {key:'hasRDApplication',label:'Utilisation in R&D (URL or description)',type:'text'},
+    {key:'hasUpdateYear',label:'Last Update Year',type:'number',note:'Minor update/maintenance'},
+    {key:'hasUpgradeYear',label:'Last Upgrade Year',type:'number',note:'Major new version'},
+    {sep:'IT documentation'},
+    {key:'hasITDocumentation',label:'IT/Code Documentation Exists',type:'bool3',opts:['Yes','No']},
+    {key:'hasITDocumentationURL',label:'IT Documentation URL',type:'url'},
+  ],
+  model:[
+    {key:'DSS_ID',label:'DSS Identifier',type:'text',auto:'dss_id'},
+    {key:'hasName',label:'Model Name',type:'text'},
+    {key:'modelClass',label:'Model Class (ontology subtype)',type:'select',options:['','Model of vegetation dynamics','Ecological model – Habitat model','Ecological model – Carbon dynamics model','Ecological model – Wildlife model','Ecological model – Soil processes model','Natural disturbance model','Socio-economic model – Economic model','Socio-economic model – Productivity model','Socio-economic model – Non-wood forest product model'],note:'Select most specific subclass'},
+    {sep:'Vegetation dynamics model'},
+    {key:'isClimateSensitive',label:'Climate Sensitive',type:'bool3',opts:V.yesno,note:'At least one process (growth, mortality, regeneration) responds to temperature or precipitation input'},
+    {key:'hasGrowth',label:'Growth submodel',type:'bool3',opts:V.yesno},
+    {key:'hasRegeneration',label:'Regeneration submodel',type:'bool3',opts:V.yesno},
+    {key:'hasMortality',label:'Mortality submodel',type:'bool3',opts:V.yesno},
+    {key:'hasBiome',label:'Biome',type:'multicheck',options:V.vegBiome},
+    {key:'hasModelingType',label:'Model Type',type:'select',options:[''].concat(V.vegType)},
+    {key:'hasModelName',label:'Model Name (specific)',type:'text',note:'e.g. ForClim, SORTIE, iLand'},
+    {key:'spatScaleGrowth',label:'Spatial Scale – Growth',type:'select',options:[''].concat(V.spatVeg)},
+    {key:'spatScaleRegen',label:'Spatial Scale – Regeneration',type:'select',options:[''].concat(V.spatVeg)},
+    {key:'spatScaleMort',label:'Spatial Scale – Mortality',type:'select',options:[''].concat(V.spatVeg)},
+    {key:'hasTemporalResolution',label:'Temporal Resolution',type:'select',options:[''].concat(V.tempVeg)},
+    {sep:'Natural disturbance model'},
+    {key:'hasDisturbanceModel',label:'Has Disturbance Model',type:'bool3',opts:V.yesno},
+    {key:'disturbanceTypes',label:'Disturbance Types Represented',type:'multicheck',options:V.distType},
+    {key:'fireEmergent',label:'Fire – Emergent',type:'bool3',opts:V.yesno,note:'Fire arises from interactions between fuel, weather, and ignition modelled explicitly – not triggered by an external input'},
+    {key:'fireDeterministic',label:'Fire – Deterministic',type:'bool3',opts:V.yesno,note:'Same inputs always produce the same fire outcome – no stochastic component'},
+    {key:'fireSpatial',label:'Fire – Spatially Explicit',type:'bool3',opts:V.yesno,note:'Fire spread is modelled across space, not just at stand level'},
+    {key:'windEmergent',label:'Wind – Emergent',type:'bool3',opts:V.yesno,note:'Wind damage arises from interactions between stand structure, terrain, and wind field modelled explicitly – not triggered by an external input'},
+    {key:'windDeterministic',label:'Wind – Deterministic',type:'bool3',opts:V.yesno,note:'Same inputs always produce the same wind damage outcome – no stochastic component'},
+    {key:'windSpatial',label:'Wind – Spatially Explicit',type:'bool3',opts:V.yesno,note:'Wind damage is modelled across space, not just at stand level'},
+    {key:'beetleEmergent',label:'Beetle – Emergent',type:'bool3',opts:V.yesno,note:'Beetle outbreak arises from interactions between host availability, beetle population, and climate modelled explicitly – not triggered by an external input'},
+    {key:'beetleDeterministic',label:'Beetle – Deterministic',type:'bool3',opts:V.yesno,note:'Same inputs always produce the same beetle outbreak outcome – no stochastic component'},
+    {key:'beetleSpatial',label:'Beetle – Spatially Explicit',type:'bool3',opts:V.yesno,note:'Beetle spread is modelled across space, not just at stand level'},
+    {key:'snowEmergent',label:'Snow/Ice – Emergent',type:'bool3',opts:V.yesno,note:'Snow/ice damage arises from interactions between stand structure, load, and weather modelled explicitly – not triggered by an external input'},
+    {key:'snowDeterministic',label:'Snow/Ice – Deterministic',type:'bool3',opts:V.yesno,note:'Same inputs always produce the same snow/ice damage outcome – no stochastic component'},
+    {key:'snowSpatial',label:'Snow/Ice – Spatially Explicit',type:'bool3',opts:V.yesno,note:'Snow/ice damage is modelled across space, not just at stand level'},
+    {key:'droughtEmergent',label:'Drought – Emergent',type:'bool3',opts:V.yesno,note:'Drought stress arises from interactions between soil water balance, evapotranspiration, and tree physiology modelled explicitly – not triggered by an external input'},
+    {key:'droughtDeterministic',label:'Drought – Deterministic',type:'bool3',opts:V.yesno,note:'Same inputs always produce the same drought outcome – no stochastic component'},
+    {key:'droughtSpatial',label:'Drought – Spatially Explicit',type:'bool3',opts:V.yesno,note:'Drought effects are modelled across space, not just at stand level'},
+    {key:'bioticEmergent',label:'Biotic (other) – Emergent',type:'bool3',opts:V.yesno,note:'Biotic disturbance arises from ecological interactions modelled explicitly – not triggered by an external input'},
+    {key:'bioticDeterministic',label:'Biotic (other) – Deterministic',type:'bool3',opts:V.yesno,note:'Same inputs always produce the same biotic disturbance outcome – no stochastic component'},
+    {key:'bioticSpatial',label:'Biotic (other) – Spatially Explicit',type:'bool3',opts:V.yesno,note:'Biotic disturbance is modelled across space, not just at stand level'},
+    {key:'abioticEmergent',label:'Abiotic (other) – Emergent',type:'bool3',opts:V.yesno,note:'Abiotic disturbance arises from physical processes modelled explicitly – not triggered by an external input'},
+    {key:'abioticDeterministic',label:'Abiotic (other) – Deterministic',type:'bool3',opts:V.yesno,note:'Same inputs always produce the same abiotic disturbance outcome – no stochastic component'},
+    {key:'abioticSpatial',label:'Abiotic (other) – Spatially Explicit',type:'bool3',opts:V.yesno,note:'Abiotic disturbance is modelled across space, not just at stand level'},
+    {sep:'Soil processes model'},
+    {key:'soilNutrient',label:'Soil – Nutrient Cycling',type:'bool3',opts:V.yesno},
+    {key:'soilWater',label:'Soil – Water Balance',type:'bool3',opts:V.yesno},
+    {sep:'Wildlife model'},
+    {key:'wildlifePopDyn',label:'Wildlife – Population Dynamics',type:'bool3',opts:V.yesno},
+    {key:'wildlifeSpecies',label:'Wildlife – Species Represented',type:'multicheck',options:V.habitatSp},
+    {sep:'NWFP model'},
+    {key:'nwfpModel',label:'NWFP Model Present',type:'bool3',opts:V.yesno},
+    {key:'nwfpTypes',label:'NWFP Types',type:'multicheck',options:V.nwfp},
+    {sep:'Habitat model'},
+    {key:'habitatModel',label:'Habitat Model Present',type:'bool3',opts:V.yesno},
+    {key:'habitatSpecies',label:'Habitat Model – Species Focus',type:'multicheck',options:V.habitatSp},
+    {sep:'Other model types'},
+    {key:'productivityModel',label:'Productivity Model Present',type:'bool3',opts:V.yesno},
+    {key:'carbonModel',label:'Carbon Dynamics Model Present',type:'bool3',opts:V.yesno},
+    {sep:'General properties'},
+    {key:'hasTreeSpecies',label:'Main Tree Species',type:'multicheck',options:V.treeSp},
+    {key:'hasMixture',label:'Mixed Forest Types',type:'bool3',opts:V.yesno},
+    {key:'hasScientificReference',label:'Scientific Reference',type:'text'},
+    {key:'hasURL',label:'Model URL / Repository',type:'url'},
+  ],
+  forestmgmt:[
+    {key:'DSS_ID',label:'DSS Identifier',type:'text',auto:'dss_id'},
+    {key:'hasName',label:'Strategy / Configuration Name',type:'text'},
+    {key:'hasRegion',label:'Regional Area',type:'multicheck',options:V.region},
+    {key:'hasManagementScale',label:'Management Scale',type:'multicheck',options:V.mgmtScale},
+    {key:'silvApproach',label:'Silvicultural Approach',type:'multicheck',options:V.silvApproach},
+    {key:'silvType',label:'Silvicultural Type',type:'multicheck',options:V.silvType},
+    {key:'mainTreeSpecies',label:'Main Tree Species',type:'multicheck',options:V.treeSp},
+    {key:'hasMixture',label:'Mixed Forest Types',type:'bool3',opts:V.yesno},
+    {key:'biodivFeature',label:'Biodiversity Features',type:'multicheck',options:V.biodiv},
+    {key:'harvestSystem',label:'Harvesting System Type',type:'multicheck',options:V.harvestSys},
+    {key:'harvestType',label:'Harvesting Type',type:'multicheck',options:V.harvestType},
+    {key:'harvestOp',label:'Harvesting Operation',type:'multicheck',options:V.harvestOp},
+    {key:'infraMgmt',label:'Infrastructure Management',type:'multicheck',options:V.infra},
+    {key:'hasDescription',label:'Notes',type:'textarea'},
+  ],
+  es:[
+    {key:'DSS_ID',label:'DSS Identifier',type:'text',auto:'dss_id'},
+    {key:'hasName',label:'ES Name / Label',type:'text',note:'Short descriptive name'},
+    {key:'isModelled',label:'Modelled in DSS',type:'bool3',opts:['Yes','No']},
+    {sep:'CICES classification'},
+    {key:'cicesSection',label:'CICES Section',type:'cices_section'},
+    {key:'cicesDivision',label:'CICES Division',type:'cices_division'},
+    {key:'cicesGroup',label:'CICES Group',type:'cices_group'},
+    {key:'cicesClass',label:'CICES Class (most specific)',type:'cices_class'},
+    {sep:'Modelling & indicators'},
+    {key:'modellingMethod',label:'Modelling Method',type:'text',note:'Text description or link'},
+    {key:'esInputType',label:'ES Input Data Type',type:'multicheck',options:V.esInput},
+    {key:'quantMethod',label:'Quantification Method',type:'multicheck',options:V.esQuant},
+    {key:'indicatorSubtype',label:'Indicator Subtype',type:'multicheck',options:V.esIndicator,note:'Pressure = human impact on ES. State = current condition of ES. Benefit = what people receive from ES. Value = monetary or non-monetary valuation of the benefit'},
+    {key:'hasUnit',label:'Unit of Measurement',type:'text'},
+    {key:'outDataType',label:'Output Data Type',type:'select',options:['','Quantitative','Qualitative']},
+    {key:'spatialResolution',label:'Spatial Resolution',type:'select',options:['','Local','Regional','National','Global']},
+    {key:'temporalResolution',label:'Temporal Resolution',type:'select',options:['','One-time','Seasonal','Annual','Long-term']},
+    {key:'hasDescription',label:'Notes',type:'textarea'},
+  ],
+  planning:[
+    {key:'DSS_ID',label:'DSS Identifier',type:'text',auto:'dss_id'},
+    {key:'hasName',label:'Planning Problem Title',type:'text'},
+    {key:'hasDescription',label:'Description',type:'textarea'},
+    {sep:'Decision context'},
+    {key:'tempScale',label:'Temporal Scale',type:'multicheck',options:V.ppTempScale},
+    {key:'spatScale',label:'Spatial Scale',type:'multicheck',options:V.ppSpatScale},
+    {key:'decisionSituation',label:'Decision-Making Situation',type:'multicheck',options:V.ppDecision,note:'Unilateral = one decision-maker acts alone. Participatory = many actors, no consensus required. Collegial = consensus among all parties required. Single/multiple objectives = number of management goals addressed'},
+    {key:'spatContext',label:'Spatial Context',type:'select',options:[''].concat(V.ppSpatCtx),note:'Neighbourhood interrelations = spatial interactions between adjacent units matter (e.g. landscape-level windthrow risk). No neighbourhood = units treated independently. Non-spatial = no geographic dimension'},
+    {key:'esDimension',label:'Ecosystem Services Dimension',type:'text',note:'Names of ES considered'},
+  ],
+  casestudy:[
+    {key:'DSS_ID',label:'DSS Identifier',type:'text',auto:'dss_id'},
+    {key:'hasName',label:'Full Name',type:'text'},
+    {key:'hasLocation',label:'Location',type:'text'},
+    {key:'hasCountry',label:'Country',type:'text'},
+    {key:'hasBiome',label:'Biome / Eco-region',type:'multicheck',options:V.csBiome},
+    {key:'geoExtent',label:'Geographic Extent',type:'select',options:[''].concat(V.csExtent)},
+    {sep:'Temporal scope'},
+    {key:'tempCovStart',label:'Temporal Coverage Start (year)',type:'number'},
+    {key:'tempCovEnd',label:'Temporal Coverage End (year)',type:'number'},
+    {key:'duration',label:'Duration (years)',type:'number'},
+    {sep:'Scenarios & management'},
+    {key:'climScenario',label:'Climate Change Scenario',type:'multicheck',options:V.csClim,note:'GWL = Global Warming Level (degrees above pre-industrial). RCP = Representative Concentration Pathway. SSP = Shared Socioeconomic Pathway. Select all that apply.'},
+    {key:'lulcTypology',label:'Land Use Change Typology',type:'multicheck',options:V.csLULC,note:'LULUCF = Land Use, Land Use Change and Forestry (EU/UNFCCC accounting framework). AFOLU = Agriculture, Forestry and Other Land Use (IPCC). Select if the case study uses these frameworks.'},
+    {key:'naturalDisturbances',label:'Assesses Natural Disturbances',type:'bool3',opts:V.yesno,note:'Does the case study explicitly assess or model the role of natural disturbances (fire, wind, drought, pests)?'},
+    {key:'sensitivityAnalysis',label:'Sensitivity Analysis of Objectives',type:'bool3',opts:V.yesno,note:'Does the case study test how sensitive outcomes are to changes in management objectives or their weights?'},
+    {key:'hasIFM',label:'Integrated Forest Management (IFM)',type:'bool3',opts:V.yesno,note:'Integrative Forest Management – explicitly balances timber production with biodiversity and other ES through integrated planning'},
+    {key:'hasSFM',label:'Sustainable Forest Management (SFM)',type:'bool3',opts:V.yesno,note:'Sustainable Forest Management – management meeting current needs without compromising future generations; often aligned with FSC/PEFC criteria'},
+    {key:'hasAFM',label:'Adaptive Forest Management (AFM)',type:'bool3',opts:V.yesno,note:'Adaptive Forest Management – iterative management that incorporates monitoring and adjusts strategies in response to observed outcomes'},
+    {sep:'Application type'},
+    {key:'realLifeApp',label:'Real-life Application',type:'bool3',opts:V.yesno,note:'Was the DSS applied to a real management situation, not just a research or demonstration context?'},
+    {key:'rdApp',label:'R&D Application',type:'bool3',opts:V.yesno,note:'Was the DSS used in a research or development context, e.g. to test methods or compare scenarios without operational management decisions?'},
+    {sep:'Actors'},
+    {key:'esBeneficiary',label:'Beneficiary of ES',type:'multicheck',options:V.esBeneficiary,note:'Who receives the benefits of the ecosystem services addressed in this case study?'},
+    {key:'esProvider',label:'Provider of ES',type:'multicheck',options:V.esBeneficiary,note:'Who manages or owns the forest land that provides the ecosystem services?'},
+    {sep:'References & links'},
+    {key:'hasScientificReference',label:'Scientific Reference',type:'text'},
+    {key:'relatedPP',label:'Related Planning Problem',type:'text'},
+    {key:'fullDescription',label:'Full Description',type:'textarea'},
+  ],
+  inputdata:[
+    {key:'DSS_ID',label:'DSS Identifier',type:'text',auto:'dss_id'},
+    {key:'hasName',label:'Dataset / Data Source Name',type:'text'},
+    {key:'hasDataSource',label:'Data Source Type',type:'multicheck',options:V.dataSource},
+    {key:'hasDataType',label:'Data Type',type:'multicheck',options:V.dataType},
+    {key:'hasFormat',label:'File Format',type:'multicheck',options:V.fileFormat},
+    {key:'hasCollectionMethod',label:'Collection Method',type:'text'},
+    {key:'esInputType',label:'ES Input Data Type',type:'multicheck',options:V.esInput,note:'If data relates to ES quantification'},
+    {sep:'Spatial & temporal scope'},
+    {key:'spatScale',label:'Spatial Scale',type:'select',options:[''].concat(V.spatScale)},
+    {key:'spatCoverage',label:'Spatial Coverage',type:'text',note:'Geographic description'},
+    {key:'tempScale',label:'Temporal Scale',type:'select',options:[''].concat(V.tempScale)},
+    {key:'tempCoverage',label:'Temporal Coverage',type:'text',note:'e.g. 1990–2020'},
+    {key:'hasUnit',label:'Unit',type:'text'},
+    {key:'hasProvider',label:'Provider',type:'text'},
+    {key:'hasURL',label:'URL',type:'url'},
+    {key:'hasDescription',label:'Notes',type:'textarea'},
+  ],
+  outputdata:[
+    {key:'DSS_ID',label:'DSS Identifier',type:'text',auto:'dss_id'},
+    {key:'hasName',label:'Output Name',type:'text'},
+    {key:'hasVisualization',label:'Visualization Type',type:'multicheck',options:V.outViz},
+    {key:'hasDataType',label:'Output Data Type',type:'select',options:[''].concat(V.outDataType)},
+    {key:'hasFormat',label:'File Format',type:'multicheck',options:V.fileFormat},
+    {key:'quantMethod',label:'Quantification Method',type:'multicheck',options:V.outQuant},
+    {key:'dataProcessing',label:'Data Processing Method',type:'multicheck',options:V.outProc},
+    {key:'spatScale',label:'Spatial Scale',type:'select',options:[''].concat(V.spatScale)},
+    {key:'tempScale',label:'Temporal Scale',type:'select',options:[''].concat(V.outTempScale)},
+    {key:'hasUnit',label:'Unit',type:'text'},
+    {key:'uncertaintyIncluded',label:'Uncertainty Included in Output',type:'bool3',opts:V.yesno},
+    {key:'hasDescription',label:'Notes',type:'textarea'},
+  ],
+  techniques:[
+    {key:'DSS_ID',label:'DSS Identifier',type:'text',auto:'dss_id'},
+    {key:'structuring',label:'Problem Identification/Structuring',type:'bool3',opts:V.yesno},
+    {key:'modelling',label:'Problem Modelling',type:'bool3',opts:V.yesno},
+    {key:'solving',label:'Problem Solving',type:'bool3',opts:V.yesno},
+    {sep:'MADM – Multi-attribute decision support'},
+    {key:'madmMethod',label:'MADM Method(s)',type:'multicheck',options:V.madm,note:'MADM evaluates a fixed set of alternatives against multiple criteria. AHP = Analytic Hierarchy Process; ANP = Analytic Network Process; PROMETHEE/ELECTRE = outranking methods; Scoring = weighted scoring'},
+    {sep:'MODM – Multi-objective decision support'},
+    {key:'modmMethod',label:'MODM Method(s)',type:'multicheck',options:V.modm,note:'MODM finds optimal solutions within a decision space defined by constraints and multiple objectives simultaneously – typically used in harvest scheduling'},
+    {key:'hasDescription',label:'Notes',type:'textarea'},
+  ],
+  uncertainty:[
+    {key:'DSS_ID',label:'DSS Identifier',type:'text',auto:'dss_id'},
+    {key:'modelsAssess',label:'Models Assess Uncertainty',type:'bool3',opts:V.yesno},
+    {key:'uncMethod',label:'Type of Uncertainty Evaluation',type:'multicheck',options:V.uncMethod},
+    {key:'uncSource',label:'Uncertainty Source',type:'multicheck',options:V.uncSource},
+    {key:'hasDescription',label:'Notes',type:'textarea'},
+  ],
+  scenario:[
+    {key:'DSS_ID',label:'DSS Identifier',type:'text',auto:'dss_id'},
+    {key:'hasName',label:'Scenario Name',type:'text'},
+    {key:'scenType',label:'Scenario Type',type:'multicheck',options:V.scenType,note:'Select all types that apply. Climate scenario = uses a defined emissions or warming pathway. Management scenario = defines alternative silvicultural or harvesting strategies. Land use scenario = involves changes in forest area or land cover.'},
+    {key:'tempStart',label:'Time Horizon Start',type:'number',note:'Year (e.g. 2020)'},
+    {key:'tempEnd',label:'Time Horizon End',type:'number',note:'Year (e.g. 2100)'},
+    {key:'hasDescription',label:'Scenario Description',type:'textarea'},
+  ],
+  participatory:[
+    {key:'DSS_ID',label:'DSS Identifier',type:'text',auto:'dss_id'},
+    {key:'hasName',label:'Process Name / Label',type:'text',note:'Short descriptive label, e.g. "Stakeholder workshop – scenario validation"'},
+    {key:'modeOfEngagement',label:'Mode of Engagement',type:'multicheck',options:V.engMode,note:'Workshop = structured group meeting. Co-design = joint development of DSS components or scenarios. Focus group = small group in-depth discussion. Survey = written or online questionnaire. Stakeholder panel = recurring advisory group.'},
+    {key:'engPurpose',label:'Engagement Purpose',type:'textarea',note:'Describe the specific purpose: what were participants asked to contribute or decide? e.g. "Validate climate scenarios and weight ES objectives for trade-off analysis"'},
+    {key:'facilitation',label:'Facilitation',type:'select',options:[''].concat(V.facilitation),note:'Internal = facilitated by the research/DSS team. External = facilitated by an independent professional facilitator.'},
+    {key:'toolsOrMethods',label:'Tools or Methods Used',type:'text',note:'e.g. SWOT analysis, Q-methodology, Delphi, structured decision-making, visual scenario cards'},
+    {key:'tempStructure',label:'Temporal Structure',type:'select',options:[''].concat(V.tempStruct),note:'One-time = single event. Iterative = repeated rounds with feedback between rounds. Continuous = ongoing engagement throughout the project.'},
+    {key:'evalMethod',label:'Evaluation Method',type:'text',note:'How was the quality or outcome of the participatory process evaluated? e.g. participant feedback forms, follow-up interviews, comparison of pre/post positions'},
+    {key:'participantCount',label:'Participant Count',type:'number',note:'Total number of participants across all events if iterative'},
+    {key:'hasDescription',label:'Notes',type:'textarea'},
+  ],
+  lesson:[
+    {key:'DSS_ID',label:'DSS Identifier',type:'text',auto:'dss_id'},
+    {key:'hasTitle',label:'Title',type:'text'},
+    {key:'hasStatement',label:'What? (statement)',type:'textarea',note:'The lesson itself – what was observed or found'},
+    {key:'hasJustification',label:'Why? (justification / evidence)',type:'textarea',note:'Evidence or reasoning supporting the lesson'},
+    {key:'hasRecommendation',label:'How? (recommendation)',type:'textarea',note:'How this lesson should be applied'},
+    {key:'relatedDSS',label:'Related DSS',type:'text'},
+    {key:'relatedCase',label:'Related Case Study',type:'text'},
+    {key:'relatedPP',label:'Related Planning Problem',type:'text'},
+  ],
+  km:[
+    {key:'DSS_ID',label:'DSS Identifier',type:'text',auto:'dss_id'},
+    {key:'hasName',label:'Label / Name',type:'text',note:'Short label, e.g. "Heureka Wiki" or "training material repository"'},
+    {key:'kmProcess',label:'Supported KM Process',type:'multicheck',options:V.kmProcess,note:'Knowledge Generation = new knowledge created through DSS use. Identification = existing relevant knowledge located and mapped. Evaluation/Assessment = knowledge quality or relevance assessed. Storage = knowledge documented and archived. Application = knowledge used in practice. Transfer = knowledge shared across organizations or projects.'},
+    {key:'kmTechnique',label:'Type of KM Techniques Used',type:'multicheck',options:V.kmTech,note:'AI = machine learning or AI-assisted knowledge tools. Expert System = rule-based inference system. Database = structured data repository. Lessons Learned = documented experience from applications. Best Practices = codified effective approaches. Community of Practice/Webportal = shared online platform. Knowledge Map/Cognitive Map = visual representation of knowledge structure.'},
+    {key:'hasDescription',label:'Notes',type:'textarea'},
+  ],
+  actor:[
+    {key:'DSS_ID',label:'DSS Identifier',type:'text',auto:'dss_id'},
+    {key:'hasName',label:'Full Name',type:'text',note:'Full name of the person'},
+    {key:'hasEmail',label:'Email',type:'email'},
+    {key:'hasAffiliation',label:'Affiliation',type:'text'},
+    {key:'hasURL',label:'Profile URL',type:'url'},
+    {sep:'Role & context'},
+    {key:'actorRole',label:'Role of Actor',type:'multicheck',options:V.actorRole,note:'Developer = built the system. Researcher = contributed scientific knowledge. Decision maker = used outputs to make management decisions. Provider = supplies the ES. Beneficiary = receives the ES.'},
+    {key:'actorInteraction',label:'Interaction Mode',type:'select',options:[''].concat(V.actorInteraction),note:'How the actor relates to the DSS process: Top-down = receives outputs as a user. Participatory = involved in scenario design or evaluation. Co-production = joint development of DSS or knowledge. Contract-based = commissioned use.'},
+    {key:'hasCountry',label:'Country / Region',type:'text'},
+    {key:'actorLevel',label:'Institutional Level',type:'select',options:[''].concat(V.actorLevel),note:'Institutional level at which this actor operates'},
+    {key:'actorSector',label:'Sector',type:'select',options:[''].concat(V.actorSector)},
+    {key:'actorAuthority',label:'Authority Type',type:'select',options:[''].concat(V.actorAuthority),note:'Type of decision-making authority held by this actor in the forest management context'},
+    {key:'orgSector',label:'Sector of Organisation',type:'select',options:[''].concat(V.actorSector),note:'Sector of the organisation the actor belongs to'},
+  ],
+};
+
+// =====================================================
+// STATE
+// =====================================================
+const SECTIONS=['dss','software','model','forestmgmt','es','planning','casestudy','inputdata','outputdata','techniques','uncertainty','scenario','participatory','lesson','km','actor'];
+const LABELS={dss:'DSS',software:'Software',model:'Model',forestmgmt:'Forest Mgmt',es:'Ecosystem Service',planning:'Planning Problem',casestudy:'Case Study',inputdata:'Input Data',outputdata:'Output Data',techniques:'Decision Technique',uncertainty:'Uncertainty Eval',scenario:'Scenario',participatory:'Participatory Process',lesson:'Lesson',km:'KM Process',actor:'Actor'};
+let counters={};
+SECTIONS.forEach(s=>counters[s]=0);
+
+// =====================================================
+// NAVIGATION
+// =====================================================
+function showSection(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>{
+    if(n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+id+"'"))n.classList.add('active');
+  });
+  return false;
+}
+
+// =====================================================
+// INSTANCES
+// =====================================================
+function addInstance(type,data){
+  counters[type]++;
+  const id=type+'_'+counters[type];
+  const dssId=document.getElementById('global-dss-id').value||'';
+  const card=document.createElement('div');
+  card.className='instance-card';card.id='card-'+id;
+  card.innerHTML=`<div class="card-header"><span class="card-label">${LABELS[type]} #${counters[type]}</span><button class="btn btn-danger btn-sm" onclick="removeInstance('${id}','${type}')">✕ Remove</button></div><div class="card-body">${buildFields(FIELDS[type],id,dssId,data)}</div>`;
+  document.getElementById('instances-'+type).appendChild(card);
+  updateCount(type);
+  if(type==='es')initCICES(id);
+}
+
+function buildFields(fields,id,dssId,data){
+  let html='',buf=[];
+  const flush=()=>{
+    if(!buf.length)return;
+    if(buf.length===1)html+=buf[0];
+    else if(buf.length===2)html+=`<div class="field-row">${buf.join('')}</div>`;
+    else html+=`<div class="field-row-3">${buf.join('')}</div>`;
+    buf=[];
+  };
+  fields.forEach(f=>{
+    if(f.sep){flush();html+=`<div class="field-sep">${f.sep}</div>`;return;}
+    const val=data&&data[f.key]!==undefined?data[f.key]:(f.auto==='dss_id'?dssId:'');
+    const fhtml=buildField(f,id,val);
+    if(['textarea','multicheck','bool3'].includes(f.type)){flush();html+=fhtml;}
+    else{buf.push(fhtml);if(buf.length===2)flush();}
+  });
+  flush();return html;
+}
+
+function buildField(f,id,val){
+  const fid=`${id}_${f.key}`;
+  const note=f.note?`<span class="def-tooltip">${f.note}</span>`:'';
+  let inp='';
+  if(['text','url','email'].includes(f.type)){
+    inp=`<input type="${f.type}" id="${fid}" name="${f.key}" value="${esc(val)}" class="field-input">`;
+  }else if(f.type==='number'){
+    inp=`<input type="number" id="${fid}" name="${f.key}" value="${esc(val)}" class="field-input">`;
+  }else if(f.type==='textarea'){
+    inp=`<textarea id="${fid}" name="${f.key}" class="field-input">${esc(val)}</textarea>`;
+  }else if(f.type==='select'){
+    const opts=f.options.map(o=>`<option value="${esc(o)}" ${val===o?'selected':''}>${o||'– select –'}</option>`).join('');
+    inp=`<select id="${fid}" name="${f.key}" class="field-input">${opts}</select>`;
+  }else if(f.type==='cices_section'){
+    const opts=[''].concat(Object.keys(CICES_MAP)).map(o=>`<option value="${esc(o)}" ${val===o?'selected':''}>${o||'– select –'}</option>`).join('');
+    inp=`<select id="${fid}" name="${f.key}" class="field-input">${opts}</select>`;
+  }else if(f.type==='cices_division'||f.type==='cices_group'||f.type==='cices_class'){
+    inp=`<select id="${fid}" name="${f.key}" class="field-input" data-init="${esc(val)}"><option value="">– select –</option></select>`;
+  }else if(f.type==='bool3'){
+    const opts=f.opts||['Yes','No','Unknown'];
+    inp=`<div class="bool-group">`+opts.map(v=>{
+      const sid=`${fid}_${v.replace(/\W/g,'_')}`;
+      return `<div class="bool-option"><input type="radio" id="${sid}" name="${fid}" value="${esc(v)}" ${val===v?'checked':''}><label for="${sid}">${v}</label></div>`;
+    }).join('')+`</div>`;
+  }else if(f.type==='multicheck'){
+    const selV=Array.isArray(val)?val:(val?[val]:[]);
+    inp=`<div class="check-group">`+f.options.map(o=>{
+      const sid=`${fid}_${o.replace(/\W+/g,'_').slice(0,30)}`;
+      return `<div class="check-option"><input type="checkbox" id="${sid}" name="${fid}" value="${esc(o)}" ${selV.includes(o)?'checked':''}><label for="${sid}">${o}</label></div>`;
+    }).join('')+`</div>`;
+  }
+  return `<div class="field-group"><label for="${fid}">${f.label}${note}</label>${inp}</div>`;
+}
+
+function esc(v){return(v||'').toString().replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
+
+function initCICES(cardId){
+  const card=document.getElementById('card-'+cardId);
+  if(!card)return;
+  const sEl=card.querySelector('select[name="cicesSection"]');
+  const dEl=card.querySelector('select[name="cicesDivision"]');
+  const gEl=card.querySelector('select[name="cicesGroup"]');
+  const cEl=card.querySelector('select[name="cicesClass"]');
+  if(!sEl||!dEl||!gEl||!cEl)return;
+
+  function populate(el,options,preselect){
+    el.innerHTML='<option value="">– select –</option>'+
+      options.map(o=>`<option value="${esc(o)}"${preselect===o?' selected':''}>${o}</option>`).join('');
+  }
+  function reset(el){el.innerHTML='<option value="">– select –</option>';}
+
+  sEl.onchange=function(){
+    const sec=sEl.value;
+    if(sec&&CICES_MAP[sec])populate(dEl,Object.keys(CICES_MAP[sec]),'');
+    else reset(dEl);
+    reset(gEl);reset(cEl);
+  };
+  dEl.onchange=function(){
+    const sec=sEl.value,div=dEl.value;
+    if(sec&&div&&CICES_MAP[sec]&&CICES_MAP[sec][div])populate(gEl,Object.keys(CICES_MAP[sec][div]),'');
+    else reset(gEl);
+    reset(cEl);
+  };
+  gEl.onchange=function(){
+    const sec=sEl.value,div=dEl.value,grp=gEl.value;
+    if(sec&&div&&grp&&CICES_MAP[sec]&&CICES_MAP[sec][div]&&CICES_MAP[sec][div][grp])populate(cEl,CICES_MAP[sec][div][grp],'');
+    else reset(cEl);
+  };
+
+  // Replay pre-populated values (e.g. from loadDemo)
+  const initD=dEl.dataset.init,initG=gEl.dataset.init,initC=cEl.dataset.init;
+  const sec=sEl.value;
+  if(sec&&CICES_MAP[sec]){
+    populate(dEl,Object.keys(CICES_MAP[sec]),initD);
+    if(initD&&CICES_MAP[sec][initD]){
+      populate(gEl,Object.keys(CICES_MAP[sec][initD]),initG);
+      if(initG&&CICES_MAP[sec][initD][initG]){
+        populate(cEl,CICES_MAP[sec][initD][initG],initC);
+      }
+    }
+  }
+}
+
+function removeInstance(id,type){
+  const c=document.getElementById('card-'+id);if(c)c.remove();
+  updateCount(type);
+}
+function updateCount(type){
+  document.getElementById('count-'+type).textContent=document.getElementById('instances-'+type).querySelectorAll('.instance-card').length;
+}
+function updateDSSId(val){
+  document.querySelectorAll('input[name="DSS_ID"]').forEach(el=>el.value=val);
+}
+
+// =====================================================
+// EXPORT
+// =====================================================
+function extractInstances(type){
+  const cards=document.getElementById('instances-'+type).querySelectorAll('.instance-card');
+  const fields=FIELDS[type];const rows=[];
+  cards.forEach(card=>{
+    const row={};
+    fields.forEach(f=>{
+      if(f.sep)return;
+      const fid=card.id.replace('card-','')+'_'+f.key;
+      if(f.type==='bool3'){const c=card.querySelector(`input[name="${fid}"]:checked`);row[f.key]=c?c.value:'';}
+      else if(f.type==='multicheck'){const cc=card.querySelectorAll(`input[name="${fid}"]:checked`);row[f.key]=Array.from(cc).map(c=>c.value).join('; ');}
+      else{const el=card.querySelector(`#${fid}`);row[f.key]=el?el.value:'';}
+    });
+    rows.push(row);
+  });
+  return rows;
+}
+
+function toCSV(rows,fields){
+  if(!rows.length)return'';
+  const cols=fields.filter(f=>!f.sep).map(f=>f.key);
+  return[cols.join(','),...rows.map(r=>cols.map(c=>`"${(r[c]||'').toString().replace(/"/g,'""')}"`).join(','))].join('\n');
+}
+
+function downloadCSV(content,filename){
+  const blob=new Blob([content],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=filename;a.click();URL.revokeObjectURL(url);
+}
+
+function exportSection(type){
+  const rows=extractInstances(type);
+  if(!rows.length){showToast('No instances in '+type);return;}
+  const dssId=document.getElementById('global-dss-id').value||'forestdss';
+  downloadCSV(toCSV(rows,FIELDS[type]),`${dssId}_${type}.csv`);
+  showToast(`Exported ${rows.length} row(s)`);
+}
+
+function exportAllCSV(){exportJSON();}
+
+function exportFlatCSV(){
+  const dssId=document.getElementById('global-dss-id').value||'forestdss';
+  const rows=[['DSS_ID','section','instance_number','field_key','field_value']];
+  SECTIONS.forEach(t=>{
+    const instances=extractInstances(t);
+    instances.forEach((inst,i)=>{
+      Object.entries(inst).forEach(([k,v])=>{
+        rows.push([dssId,t,String(i+1),k,(v||'').toString()]);
+      });
+    });
+  });
+  if(rows.length===1){showToast('No data to export yet');return;}
+  const csv=rows.map(r=>r.map(c=>`"${c.replace(/"/g,'""')}"`).join(',')).join('\n');
+  downloadCSV(csv,`${dssId}_flat.csv`);
+  showToast(`Exported flat CSV (${rows.length-1} rows)`);
+}
+
+function exportJSON(){
+  const dssId=document.getElementById('global-dss-id').value||'forestdss';
+  const out={DSS_ID:dssId,exported:new Date().toISOString()};
+  SECTIONS.forEach(t=>{const rows=extractInstances(t);if(rows.length)out[t]=rows;});
+  const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=`${dssId}_full.json`;a.click();URL.revokeObjectURL(url);
+  showToast('Exported JSON');
+}
+
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+// =====================================================
+// DEMO
+// =====================================================
+function newDSS(){
+  if(!confirm('Clear all data and start a new DSS characterization?')) return;
+  SECTIONS.forEach(s=>{
+    document.getElementById('instances-'+s).innerHTML='';
+    counters[s]=0;
+    document.getElementById('count-'+s).textContent='0';
+  });
+  document.getElementById('global-dss-id').value='';
+  addInstance('dss');
+  showSection('dss');
+  showToast('Ready for new DSS');
+}
+function loadDemo(){
+  document.getElementById('global-dss-id').value='HEUREKA';
+
+  addInstance('dss',{
+    DSS_ID:'HEUREKA',
+    hasName:'Heureka PlanWise – Forest Planning and Decision Support System',
+    hasAcronym:'Heureka PlanWise',
+    hasDescription:'Heureka is a forest planning system developed by the Swedish University of Agricultural Sciences (SLU) for long-term strategic and tactical forest management planning. It simulates forest development under alternative management regimes and supports multi-criteria evaluation of trade-offs among timber production, carbon sequestration, biodiversity, and other ecosystem services.',
+    hasRelatedDSS:'Heureka RegWise, Heureka StandWise',
+    hasURL:'https://www.slu.se/heureka',
+    hasUserManual:'Yes',
+    hasUserManualURL:'https://www.heurekaslu.se/wiki/Heureka_Wiki',
+    hasTechnicalDocumentation:'Yes',
+    hasScientificReference:'Wikström et al. (2011) Scandinavian Journal of Forest Research 26(sup11):540–546',
+    hasAccessibility:'Open',
+    hasCosts:'0 €',
+    supportsProblemStructuring:'Yes',
+    supportsProblemModeling:'Yes',
+    supportsProblemSolving:'Yes',
+    wikiContact:'Per Wikström',
+    wikiEmail:'per.wikstrom@slu.se'
+  });
+
+  addInstance('software',{
+    DSS_ID:'HEUREKA',
+    hasName:'Heureka PlanWise',
+    hasVersion:'2.x',
+    hasITToolType:'GUI – desktop',
+    hasTechnologyReadiness:'Open-source product',
+    requiresOperatingSystem:['Windows'],
+    hasProgrammingLanguage:['C#'],
+    hasDatabaseManagementSystem:['SQLite'],
+    hasGISIntegration:['ESRI (ArcGIS)','QGIS'],
+    targetUserGroup:['Forest enterprise','Forest service/administration','Forest owner/manager','Research institution','Education/training'],
+    hasCosts:'0 €',
+    requiresSkills:'Forest mensuration knowledge, basic understanding of forest growth modelling and scenario planning',
+    requiresTrainingsDays:'≤ 1 week',
+    hasResponsibleOrganization:'Swedish University of Agricultural Sciences (SLU)',
+    contactPerson:'Per Wikström',
+    hasOrigin:'Research institution',
+    hasDeveloperCount:'> 5',
+    devActors:['Researchers','Forest specialists','Practitioners'],
+    hasRealLifeApplication:'> 100',
+    hasApplicationYear:2024,
+    hasEducationalApplication:'Yes – direct use by students',
+    hasITDocumentation:'Yes',
+    hasITDocumentationURL:'https://www.heurekaslu.se/wiki/Heureka_Wiki'
+  });
+
+  addInstance('model',{
+    DSS_ID:'HEUREKA',
+    hasName:'Heureka growth and yield model',
+    modelClass:'Model of vegetation dynamics',
+    isClimateSensitive:'No',
+    hasGrowth:'Yes',
+    hasRegeneration:'Yes',
+    hasMortality:'Yes',
+    hasBiome:['Boreal','Temperate continental'],
+    hasModelingType:'Empirical',
+    hasModelName:'Heureka individual-tree growth model',
+    spatScaleGrowth:'Tree',
+    spatScaleRegen:'Stand',
+    spatScaleMort:'Tree',
+    hasTemporalResolution:'Annual',
+    hasTreeSpecies:['Spruce','Pine','Birch','Other deciduous'],
+    hasMixture:'Yes',
+    productivityModel:'Yes',
+    carbonModel:'Yes',
+    hasScientificReference:'Elfving (2010); Wikström et al. (2011)'
+  });
+
+  addInstance('model',{
+    DSS_ID:'HEUREKA',
+    hasName:'Heureka carbon accounting module',
+    modelClass:'Ecological model – Carbon dynamics model',
+    isClimateSensitive:'No',
+    hasModelingType:'Empirical',
+    spatScaleGrowth:'Stand',
+    hasTemporalResolution:'Annual',
+    carbonModel:'Yes',
+    hasScientificReference:'Ortiz et al. (2011) Forest Ecology and Management'
+  });
+
+  addInstance('forestmgmt',{
+    DSS_ID:'HEUREKA',
+    hasName:'Swedish even-aged and uneven-aged management regimes',
+    hasRegion:['Northern Europe'],
+    hasManagementScale:['Stand','Forest management unit','Landscape'],
+    silvApproach:['Clear cut','Close-to-nature silviculture','Continuous cover forestry','No management'],
+    silvType:['Natural regeneration','Plantation','Tending and thinning','Uneven-aged with conifers','No intervention'],
+    mainTreeSpecies:['Spruce','Pine','Birch','Other deciduous'],
+    hasMixture:'Yes',
+    biodivFeature:['Deadwood','Old trees','Tree microhabitat','Specific biotope'],
+    harvestSystem:['Ground-based logging','Cable logging'],
+    harvestType:['Mainly by machine','Mixed'],
+    harvestOp:['Felling','Processing','Extraction'],
+    infraMgmt:['Road network','Skid trails']
+  });
+
+  addInstance('es',{
+    DSS_ID:'HEUREKA',
+    hasName:'Timber production',
+    isModelled:'Yes',
+    cicesSection:'Provisioning',
+    cicesDivision:'Biomass provisioning',
+    cicesGroup:'Cultivated terrestrial plants for nutrition, materials or energy',
+    cicesClass:'Fibres and other materials from cultivated plants for direct use or processing (1.1.1.2)',
+    modellingMethod:'Empirical individual-tree growth model; site index-based productivity',
+    esInputType:['Biophysical'],
+    quantMethod:['Biophysical'],
+    indicatorSubtype:['State','Benefit'],
+    hasUnit:'m³/ha/yr',
+    outDataType:'Quantitative',
+    spatialResolution:'Regional',
+    temporalResolution:'Annual'
+  });
+
+  addInstance('es',{
+    DSS_ID:'HEUREKA',
+    hasName:'Carbon sequestration',
+    isModelled:'Yes',
+    cicesSection:'Regulation & maintenance',
+    cicesDivision:'Regulation of physical, chemical, biological conditions',
+    cicesGroup:'Atmospheric composition and conditions',
+    cicesClass:'Regulation of chemical composition of atmosphere and oceans (2.3.6.1)',
+    modellingMethod:'Carbon balance model tracking biomass, deadwood, soil organic carbon, and harvested wood products',
+    esInputType:['Biophysical'],
+    quantMethod:['Biophysical','Monetary'],
+    indicatorSubtype:['State','Benefit','Value'],
+    hasUnit:'tCO₂eq/ha/yr',
+    outDataType:'Quantitative',
+    spatialResolution:'Regional',
+    temporalResolution:'Annual'
+  });
+
+  addInstance('es',{
+    DSS_ID:'HEUREKA',
+    hasName:'Biodiversity – habitat maintenance',
+    isModelled:'Yes',
+    cicesSection:'Regulation & maintenance',
+    cicesDivision:'Regulation of physical, chemical, biological conditions',
+    cicesGroup:'Lifecycle maintenance, habitat and gene pool protection',
+    cicesClass:'Maintaining or regulating nursery populations and habitats (2.3.2.3)',
+    modellingMethod:'Habitat suitability indices for old-growth dependent species; deadwood volume tracking',
+    esInputType:['Biophysical'],
+    quantMethod:['Index-based'],
+    indicatorSubtype:['State'],
+    hasUnit:'index (0–1)',
+    outDataType:'Quantitative',
+    spatialResolution:'Local',
+    temporalResolution:'Annual'
+  });
+
+  addInstance('planning',{
+    DSS_ID:'HEUREKA',
+    hasName:'Long-term strategic forest management planning',
+    hasDescription:'Multi-objective planning problem at forest management unit and landscape scale, balancing timber production, carbon targets, and biodiversity conservation over 100-year horizons under alternative management regimes.',
+    tempScale:['Long term (strategic)','Medium term (tactical)'],
+    spatScale:['Forest level','Regional level'],
+    decisionSituation:['Multiple objectives','Participatory (many DM, no consensus)'],
+    spatContext:'Spatial with no neighbourhood interrelations',
+    esDimension:'Timber production, carbon sequestration, biodiversity, recreation'
+  });
+
+  addInstance('casestudy',{
+    DSS_ID:'HEUREKA',
+    hasName:'Swedish national forest planning – NFI-based scenario analysis',
+    hasLocation:'Sweden, nationwide',
+    hasCountry:'Sweden',
+    hasBiome:['Boreal'],
+    geoExtent:'National',
+    tempCovStart:2020,
+    tempCovEnd:2120,
+    duration:100,
+    climScenario:['RCP 8.5'],
+    naturalDisturbances:'No',
+    sensitivityAnalysis:'Yes',
+    hasIFM:'No',
+    hasSFM:'Yes',
+    hasAFM:'No',
+    realLifeApp:'Yes',
+    rdApp:'Yes',
+    esBeneficiary:['State-owned enterprise','Private landowners','General public'],
+    esProvider:['State-owned enterprise','Private landowners'],
+    hasScientificReference:'Nordström et al. (2019) European Journal of Forest Research 138:561–581',
+    fullDescription:'National-scale scenario analysis using Swedish NFI data, comparing business-as-usual with set-aside, intensified production, and carbon-optimized management regimes across boreal Sweden.'
+  });
+
+  addInstance('inputdata',{
+    DSS_ID:'HEUREKA',
+    hasName:'Swedish National Forest Inventory (NFI)',
+    hasDataSource:['Field survey'],
+    hasDataType:['Table','Time series'],
+    hasFormat:['CSV','Excel'],
+    hasCollectionMethod:'Systematic field sampling of permanent and temporary plots across Sweden',
+    spatScale:'National',
+    spatCoverage:'Sweden',
+    tempScale:'Annual',
+    tempCoverage:'1983–present',
+    hasUnit:'Stems/ha, m³/ha, basal area m²/ha',
+    hasProvider:'Swedish University of Agricultural Sciences (SLU)',
+    hasURL:'https://www.slu.se/riksskogstaxeringen'
+  });
+
+  addInstance('outputdata',{
+    DSS_ID:'HEUREKA',
+    hasName:'Scenario comparison – ES trade-off matrix',
+    hasVisualization:['Table','Graph','Chart'],
+    hasDataType:'Quantitative',
+    hasFormat:['Excel','CSV'],
+    quantMethod:['Biophysical','Monetary'],
+    spatScale:'National',
+    tempScale:'Decadal',
+    hasUnit:'Multiple (m³, tCO₂, index)',
+    uncertaintyIncluded:'No',
+    hasDescription:'Time series of ES indicators across management scenarios, exportable for further analysis in R or Excel.'
+  });
+
+  addInstance('techniques',{
+    DSS_ID:'HEUREKA',
+    structuring:'Yes',
+    modelling:'Yes',
+    solving:'Yes',
+    madmMethod:['Scoring','AHP','Cost Benefit Analysis'],
+    modmMethod:['Linear programming','Integer programming'],
+    hasDescription:'Heureka uses linear and integer programming for harvest scheduling optimization. Multi-criteria evaluation supports trade-off analysis across ES indicators.'
+  });
+
+  addInstance('uncertainty',{
+    DSS_ID:'HEUREKA',
+    modelsAssess:'Yes',
+    uncMethod:['Statistics'],
+    uncSource:['Input data','Model parameterization'],
+    hasDescription:'Uncertainty is partially addressed through sensitivity analysis of growth model parameters and NFI sampling variance. No explicit Monte Carlo or probabilistic uncertainty propagation.'
+  });
+
+  addInstance('scenario',{
+    DSS_ID:'HEUREKA',
+    hasName:'Business-as-usual (BAU)',
+    scenType:['Management scenario'],
+    tempStart:2020,
+    tempEnd:2120,
+    hasDescription:'Continuation of current Swedish forestry practices with even-aged management, rotation lengths of 60–100 years depending on site index, and standard thinning regimes.'
+  });
+
+  addInstance('scenario',{
+    DSS_ID:'HEUREKA',
+    hasName:'Carbon-optimized management',
+    scenType:['Management scenario','Climate scenario'],
+    tempStart:2020,
+    tempEnd:2120,
+    hasDescription:'Extended rotation lengths, increased set-asides, and reduced final felling to maximize carbon sequestration in standing biomass and soil. RCP 8.5 climate trajectory used for context.'
+  });
+
+  addInstance('lesson',{
+    DSS_ID:'HEUREKA',
+    hasTitle:'Trade-off between timber production and carbon sequestration is non-linear',
+    hasStatement:'Modest reductions in harvest intensity yield disproportionately large gains in carbon storage, but beyond a threshold further reductions produce diminishing carbon returns.',
+    hasJustification:'Scenario analyses across Swedish NFI plots show carbon stocks increase steeply when rotation length is extended by 20–30 years, but plateau at longer rotations due to increased natural mortality.',
+    hasRecommendation:'DSS scenario design should include intermediate management intensities, not only BAU vs. maximum set-aside, to reveal the shape of the trade-off curve.',
+    relatedDSS:'HEUREKA',
+    relatedCase:'Swedish national forest planning – NFI-based scenario analysis'
+  });
+
+  addInstance('km',{
+    DSS_ID:'HEUREKA',
+    hasName:'Heureka Wiki knowledge base',
+    kmProcess:['Knowledge Storage','Knowledge Transfer','Knowledge Application'],
+    kmTechnique:['Community of Practice/Webportal','Database','Best Practices'],
+    hasDescription:'The Heureka Wiki (heurekaslu.se/wiki) serves as the primary knowledge management platform, hosting model documentation, user guides, training materials, and a community forum.'
+  });
+
+  addInstance('actor',{
+    DSS_ID:'HEUREKA',
+    hasName:'Per Wikström',
+    hasEmail:'per.wikstrom@slu.se',
+    hasAffiliation:'Swedish University of Agricultural Sciences (SLU), Department of Forest Resource Management',
+    hasURL:'https://www.slu.se',
+    actorRole:['Developer','Researcher'],
+    actorInteraction:'Top-down',
+    hasCountry:'Sweden',
+    actorLevel:'National',
+    actorSector:'Academic/Research',
+    actorAuthority:'None'
+  });
+
+  showToast('Demo loaded – Heureka PlanWise');
+  showSection('dss');
+}
+
+// =====================================================
+// INIT
+// =====================================================
+document.addEventListener('DOMContentLoaded',()=>{
+  addInstance('dss');
+  showSection('dss');
+});
+</script>
+</body>
+</html>
