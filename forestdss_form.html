@@ -467,10 +467,6 @@ const FIELDS={
     {sep:'Accessibility & costs'},
     {key:'hasAccessibility',label:'Accessibility',type:'select',options:['','Open','Licensed','Internal/restricted']},
     {key:'hasCosts',label:'Ready-to-use Costs for Users',type:'select',options:[''].concat(V.costs)},
-    {sep:'Decision support function'},
-    {key:'supportsProblemStructuring',label:'Problem Structuring',type:'bool3',opts:['Yes','No'],note:'Identifies objectives, criteria, stakeholders'},
-    {key:'supportsProblemModeling',label:'Problem Modelling',type:'bool3',opts:['Yes','No'],note:'Formalizes decision element relations'},
-    {key:'supportsProblemSolving',label:'Problem Solving',type:'bool3',opts:['Yes','No'],note:'Generates/selects among alternative solutions'},
     {key:'wikiContact',label:'Wiki Contact Person',type:'text'},
     {key:'wikiEmail',label:'Wiki Contact Email',type:'email'},
   ],
@@ -686,6 +682,10 @@ const FIELDS={
   ],
   techniques:[
     {key:'DSS_ID',label:'DSS Identifier',type:'text',auto:'dss_id'},
+    {sep:'Decision support function'},
+    {key:'supportsProblemStructuring',label:'Problem Structuring',type:'bool3',opts:['Yes','No'],note:'Helps identify objectives, criteria, stakeholders'},
+    {key:'supportsProblemModeling',label:'Problem Modelling',type:'bool3',opts:['Yes','No'],note:'Formalizes relations between decision elements'},
+    {key:'supportsProblemSolving',label:'Problem Solving',type:'bool3',opts:['Yes','No'],note:'Generates or selects among alternative solutions'},
     {key:'structuring',label:'Problem Identification/Structuring',type:'bool3',opts:V.yesno},
     {key:'modelling',label:'Problem Modelling',type:'bool3',opts:V.yesno},
     {key:'solving',label:'Problem Solving',type:'bool3',opts:V.yesno},
@@ -1012,9 +1012,6 @@ function loadDemo(){
     hasScientificReference:'Wikström et al. (2011) Scandinavian Journal of Forest Research 26(sup11):540–546',
     hasAccessibility:'Open',
     hasCosts:'0 €',
-    supportsProblemStructuring:'Yes',
-    supportsProblemModeling:'Yes',
-    supportsProblemSolving:'Yes',
     wikiContact:'Per Wikström',
     wikiEmail:'per.wikstrom@slu.se'
   });
@@ -1216,6 +1213,9 @@ function loadDemo(){
 
   addInstance('techniques',{
     DSS_ID:'HEUREKA',
+    supportsProblemStructuring:'Yes',
+    supportsProblemModeling:'Yes',
+    supportsProblemSolving:'Yes',
     structuring:'Yes',
     modelling:'Yes',
     solving:'Yes',
