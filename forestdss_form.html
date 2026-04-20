@@ -100,6 +100,8 @@
     </div>
     <div class="header-actions">
       <button class="btn btn-ghost btn-sm" onclick="loadDemo()">Load demo</button>
+      <input type="file" id="json-upload" accept=".json" style="display:none" onchange="loadFromJSON(this)">
+      <button class="btn btn-ghost btn-sm" onclick="document.getElementById('json-upload').click()">↑ Load JSON</button>
       <button class="btn btn-ghost btn-sm" onclick="newDSS()">↺ New DSS</button>
     </div>
   </div>
@@ -996,6 +998,47 @@ function newDSS(){
   addInstance('dss');
   showSection('dss');
   showToast('Ready for new DSS');
+}
+function loadFromJSON(input){
+  if(!input.files || input.files.length === 0) return;
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try {
+      const data = JSON.parse(e.target.result);
+
+      // set global DSS ID
+      if(data.DSS_ID){
+        document.getElementById('global-dss-id').value = data.DSS_ID;
+        updateDSSId(data.DSS_ID);
+      }
+
+      // clear all existing instances
+      SECTIONS.forEach(s => {
+        document.getElementById('instances-'+s).innerHTML = '';
+        counters[s] = 0;
+        document.getElementById('count-'+s).textContent = '0';
+      });
+
+      // rebuild instances from JSON
+      SECTIONS.forEach(s => {
+        if(data[s] && Array.isArray(data[s])){
+          data[s].forEach(instanceData => addInstance(s, instanceData));
+        }
+      });
+
+      updateIndividualExportBtns();
+      showToast('Loaded: ' + (data.DSS_ID || 'unknown DSS'));
+      showSection('dss');
+      input.value = '';
+
+    } catch(err) {
+      showToast('Error reading JSON file');
+      console.error(err);
+    }
+  };
+  reader.readAsText(file);
 }
 function loadDemo(){
   document.getElementById('global-dss-id').value='HEUREKA';
