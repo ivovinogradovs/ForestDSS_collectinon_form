@@ -141,7 +141,6 @@
     <div class="section-class">owl:Class → Decision support system</div>
   </div>
   <div id="instances-dss"></div>
-  <div class="add-instance-bar"><button class="btn btn-outline" onclick="addInstance('dss')">+ Add DSS instance</button><span style="font-size:11px;color:var(--text-light)">Usually one per article</span></div>
 </div>
 
 <div class="section" id="sec-software">
@@ -815,7 +814,9 @@ function buildField(f,id,val){
   const fid=`${id}_${f.key}`;
   const note=f.note?`<span class="def-tooltip">${f.note}</span>`:'';
   let inp='';
-  if(['text','url','email'].includes(f.type)){
+  if(f.auto==='dss_id'){
+    inp=`<input type="text" id="${fid}" name="${f.key}" value="${esc(val)}" class="field-input" readonly style="background:var(--surface2);color:var(--text-muted);cursor:default;border-style:dashed;">`;
+  }else if(['text','url','email'].includes(f.type)){
     inp=`<input type="${f.type}" id="${fid}" name="${f.key}" value="${esc(val)}" class="field-input">`;
   }else if(f.type==='number'){
     inp=`<input type="number" id="${fid}" name="${f.key}" value="${esc(val)}" class="field-input">`;
